@@ -1,9 +1,14 @@
 const express = require("express");
-const { getGenres, getGenre } = require("../controllers/genresController");
+const {
+  getGenres,
+  getGenre,
+  createGenre,
+  deleteGenre,
+} = require("../controllers/genresController");
 
 const router = express.Router();
 
-router.get("/", getGenres);
-router.get("/:id", getGenre);
+router.route("/").get(getGenres).post(createGenre);
+router.route("/:id").get(getGenre).delete(deleteGenre);
 
 module.exports = router;
