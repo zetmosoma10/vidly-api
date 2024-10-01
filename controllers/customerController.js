@@ -1,8 +1,15 @@
 const Joi = require("joi");
-const Customer = require("../models/Customer");
+const { Customer, validateCustomer } = require("../models/Customer");
 
 exports.createCustomer = async (req, res) => {
-  validateCustomer(req);
+  const err = validateCustomer(req);
+  if (err) {
+    return res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+
   const { isGold, name, phone } = req.body;
   const customer = await Customer.create({
     name,
@@ -31,7 +38,7 @@ exports.getCustomer = async (req, res) => {
   const customer = await Customer.findById(id);
 
   if (!customer) {
-    res.status(404).json({
+    return res.status(404).json({
       status: "fail",
       message: "Customer with a given ID does not exist",
     });
@@ -79,20 +86,3 @@ exports.updateDelete = async (req, res) => {
     data: { customer },
   });
 };
-
-function validateCustomer(req) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required(),
-    phone: Joi.string().required(),
-    isGold: Joi.boolean(),
-  });
-
-  const { error } = schema.validate(req.body);
-  if (error) {
-    const errMsg = error.details.map((err) => err.message).join(", ");
-    return res.status(400).json({
-      status: "fail",
-      message: errMsg,
-    });
-  }
-}
