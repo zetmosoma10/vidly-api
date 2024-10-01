@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
 const genreSchema = new mongoose.Schema({
-  name: {
+  genre: {
     type: String,
-    required: [true, "Name is required field"],
+    required: [true, "Genre is required field"],
+    minLength: 3,
+    maxLength: 50,
     trim: true,
+    unique: true,
   },
 });
 

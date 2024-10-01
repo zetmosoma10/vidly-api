@@ -1,11 +1,29 @@
 const Joi = require("joi");
+const Genre = require("../models/Genre");
 
-const genres = [
-  { id: 1, genre: "Sci-fi" },
-  { id: 2, genre: "Drama" },
-  { id: 3, genre: "Horror" },
-  { id: 4, genre: "Action" },
-];
+exports.createGenre = async (req, res) => {
+  const schema = Joi.object({
+    genre: Joi.string().min(3).max(50).required(),
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    const errMsg = error.details.map((err) => err.message).join(", ");
+    return res.status(400).json({
+      status: "fail",
+      message: errMsg,
+    });
+  }
+
+  const genre = await Genre.create({
+    genre: req.body.genre,
+  });
+
+  res.status(201).json({
+    status: "success",
+    data: genre,
+  });
+};
 
 exports.getGenres = (req, res) => {
   res.status(200).json({
@@ -32,33 +50,6 @@ exports.getGenre = (req, res) => {
     data: {
       genre,
     },
-  });
-};
-
-exports.createGenre = (req, res) => {
-  const schema = Joi.object({
-    genre: Joi.string().min(3).max(50).required(),
-  });
-
-  const { error } = schema.validate(req.body);
-  if (error) {
-    const errMsg = error.details.map((err) => err.message).join(", ");
-    return res.status(400).json({
-      status: "fail",
-      message: errMsg,
-    });
-  }
-
-  const genre = {
-    id: genres.length + 1,
-    genre: req.body.genre,
-  };
-
-  genres.push(genre);
-
-  res.status(201).json({
-    status: "success",
-    data: genre,
   });
 };
 
