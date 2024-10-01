@@ -25,7 +25,9 @@ exports.createGenre = async (req, res) => {
   });
 };
 
-exports.getGenres = (req, res) => {
+exports.getGenres = async (req, res) => {
+  const genres = await Genre.find();
+
   res.status(200).json({
     status: "success",
     data: {
@@ -34,9 +36,9 @@ exports.getGenres = (req, res) => {
   });
 };
 
-exports.getGenre = (req, res) => {
+exports.getGenre = async (req, res) => {
   const { id } = req.params;
-  const genre = genres.find((g) => g.id === parseInt(id));
+  const genre = await Genre.findById(id);
 
   if (!genre) {
     return res.status(404).json({
@@ -53,9 +55,9 @@ exports.getGenre = (req, res) => {
   });
 };
 
-exports.deleteGenre = (req, res) => {
+exports.deleteGenre = async (req, res) => {
   const { id } = req.params;
-  const genre = genres.find((g) => g.id === parseInt(id));
+  const genre = await Genre.findByIdAndDelete(id);
 
   if (!genre) {
     return res.status(404).json({
@@ -63,9 +65,6 @@ exports.deleteGenre = (req, res) => {
       message: "Genre with that ID does not exist.",
     });
   }
-
-  const index = genres.indexOf(genre);
-  genres.slice(index, 1);
 
   res.status(204).json({
     status: "success",
