@@ -61,6 +61,24 @@ exports.getMovie = async (req, res) => {
   });
 };
 
-exports.updateMovie = async (req, res) => {};
+exports.updateMovie = async (req, res) => {
+  const { id } = req.params;
+  const movie = await Movie.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!movie) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Movie with given ID doesn't exist",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: { movie },
+  });
+};
 
 exports.deleteMovie = async (req, res) => {};
