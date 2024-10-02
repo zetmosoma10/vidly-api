@@ -8,7 +8,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getGenres).post(creatGenre);
+router.route("/").get(getGenres).post(createGenre);
 router.route("/:id").get(getGenre).delete(deleteGenre);
 
 module.exports = router;
