@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const { Genre } = require("./Genre");
+const { genreSchema } = require("../models/Genre");
 
 const movieSchema = new mongoose.Schema({
   title: {
@@ -18,7 +18,10 @@ const movieSchema = new mongoose.Schema({
     min: 0,
     default: 0,
   },
-  genre: Genre,
+  genre: {
+    type: genreSchema,
+    required: [true, "Genre is required."],
+  },
 });
 
 const Movie = mongoose.model("Movie", movieSchema);
