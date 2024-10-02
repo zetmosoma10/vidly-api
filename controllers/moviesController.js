@@ -81,4 +81,19 @@ exports.updateMovie = async (req, res) => {
   });
 };
 
-exports.deleteMovie = async (req, res) => {};
+exports.deleteMovie = async (req, res) => {
+  const { id } = req.params;
+  const deletedMovie = await Movie.findByIdAndDelete(id);
+
+  if (!deletedMovie) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Movie with given ID doesn't exist",
+    });
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: { deletedMovie },
+  });
+};
