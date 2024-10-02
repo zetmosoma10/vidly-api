@@ -34,7 +34,15 @@ exports.createMovie = async (req, res) => {
   });
 };
 
-exports.getMovies = async (req, res) => {};
+exports.getMovies = async (req, res) => {
+  const movies = await Movie.find();
+
+  res.status(200).json({
+    status: "success",
+    count: movies.length,
+    data: { movies },
+  });
+};
 
 exports.getMovie = async (req, res) => {};
 
