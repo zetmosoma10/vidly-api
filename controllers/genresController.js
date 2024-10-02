@@ -1,22 +1,16 @@
-const Joi = require("joi");
-const Genre = require("../models/Genre");
+const { Genre, validateGenre } = require("../models/Genre");
 
 exports.createGenre = async (req, res) => {
-  const schema = Joi.object({
-    genre: Joi.string().min(3).max(50).required(),
-  });
-
-  const { error } = schema.validate(req.body);
-  if (error) {
-    const errMsg = error.details.map((err) => err.message).join(", ");
+  const err = validateGenre(req);
+  if (err) {
     return res.status(400).json({
       status: "fail",
-      message: errMsg,
+      message: err,
     });
   }
 
   const genre = await Genre.create({
-    genre: req.body.genre,
+    name: req.body.name,
   });
 
   res.status(201).json({
@@ -26,7 +20,7 @@ exports.createGenre = async (req, res) => {
 };
 
 exports.getGenres = async (req, res) => {
-  const genres = await Genre.find();
+  const name = await Genre.find().sort("name");
 
   res.status(200).json({
     status: "success",
