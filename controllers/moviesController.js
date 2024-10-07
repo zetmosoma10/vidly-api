@@ -24,7 +24,7 @@ exports.createMovie = async (req, res) => {
     dailyRentalRate: req.body.dailyRentalRate,
     genre: {
       _id: genre._id,
-      name: genre.name,
+      genre: genre.genre,
     },
   });
 

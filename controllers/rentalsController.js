@@ -1,6 +1,7 @@
 const { Rental, validateRentals } = require("../models/Rentals");
 const { Customer } = require("../models/Customer");
 const { Movie } = require("../models/Movie");
+const mongoose = require("mongoose");
 
 exports.createRental = async (req, res) => {
   const err = validateRentals(req);
@@ -34,26 +35,49 @@ exports.createRental = async (req, res) => {
     });
   }
 
-  const rental = await Rental.create({
-    customer: {
-      _id: customer._id,
-      name: customer.name,
-      phone: customer.phone,
-    },
-    movie: {
-      _id: movie._id,
-      title: movie.title,
-      dailyRentalRate: movie.dailyRentalRate,
-    },
-  });
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  movie.numberInStock--;
-  movie.save();
+  try {
+    const rental = await Rental.create(
+      [
+        {
+          customer: {
+            _id: customer._id,
+            name: customer.name,
+            phone: customer.phone,
+          },
+          movie: {
+            _id: movie._id,
+            title: movie.title,
+            dailyRentalRate: movie.dailyRentalRate,
+          },
+        },
+      ],
+      { session }
+    );
 
-  res.status(200).json({
-    status: "success",
-    data: { rental },
-  });
+    movie.numberInStock--;
+    await movie.save({ session });
+
+    // * COMMIT TRANSACTION
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      status: "success",
+      data: { rental },
+    });
+  } catch (error) {
+    // ! ABORT SESSION
+    await session.abortTransaction();
+    session.endSession();
+
+    res.status(500).json({
+      status: "error",
+      message: "Something happened, try again later.",
+    });
+  }
 };
 
 exports.getRentals = async (req, res) => {
