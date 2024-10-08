@@ -1,4 +1,5 @@
 const { User, validateUser } = require("../models/User");
+const _ = require("lodash");
 
 exports.createUser = async (req, res) => {
   const err = validateUser(req);
@@ -10,15 +11,24 @@ exports.createUser = async (req, res) => {
   }
 
   try {
-    const user = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
+    const { name, email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User already registered",
+      });
+    }
+
+    const newUser = await User.create({
+      name,
+      email,
+      password,
     });
 
     res.status(201).json({
       status: "success",
-      data: { user },
+      data: { user: _.pick(newUser, ["name", "email", "_id"]) },
     });
   } catch (error) {
     res.status(500).json({
