@@ -7,6 +7,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const moviesRoutes = require("./routes/moviesRoutes");
 const rentalsRoutes = require("./routes/rentalsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
+const authRoutes = require("./routes/authRoutes");
 const app = express();
 
 app.use(express.json());
@@ -18,5 +19,6 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/movies", moviesRoutes);
 app.use("/api/rentals", rentalsRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/auth", authRoutes);
 
 module.exports = app;

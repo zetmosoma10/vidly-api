@@ -1,5 +1,6 @@
 const { User, validateUser } = require("../models/User");
 const _ = require("lodash");
+const jwt = require("jsonwebtoken");
 
 exports.createUser = async (req, res) => {
   const err = validateUser(req);
@@ -26,10 +27,20 @@ exports.createUser = async (req, res) => {
       password,
     });
 
-    res.status(201).json({
-      status: "success",
-      data: { user: _.pick(newUser, ["name", "email", "_id"]) },
-    });
+    //  * GENERATE JWT
+    const token = jwt.sign(
+      { _id: newUser._id, name: newUser.name, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXP }
+    );
+
+    res
+      .header("Authorization", `Bearer ${token}`)
+      .status(201)
+      .json({
+        status: "success",
+        data: { user: _.pick(newUser, ["name", "email", "_id"]) },
+      });
   } catch (error) {
     res.status(500).json({
       status: "error",
