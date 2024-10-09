@@ -1,6 +1,13 @@
 const { User, validateUser } = require("../models/User");
 const _ = require("lodash");
-const jwt = require("jsonwebtoken");
+
+exports.getCurrentUser = async (req, res) => {
+  const user = req.user.toObject();
+  res.status(200).json({
+    status: "success",
+    data: { user: _.omit(user, ["updatedAt", "__v", "password", "_id"]) },
+  });
+};
 
 exports.createUser = async (req, res) => {
   const err = validateUser(req);
@@ -12,7 +19,7 @@ exports.createUser = async (req, res) => {
   }
 
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, isAdmin } = req.body;
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
@@ -25,19 +32,16 @@ exports.createUser = async (req, res) => {
       name,
       email,
       password,
+      isAdmin,
     });
 
     //  * GENERATE JWT
-    const token = jwt.sign(
-      { _id: newUser._id, name: newUser.name, email: newUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXP }
-    );
+    const token = newUser.generateAuthToken();
 
     res.status(201).json({
       status: "success",
       token,
-      data: { user: _.pick(newUser, ["name", "email", "_id"]) },
+      data: { user: _.pick(newUser, ["name", "email", "_id", "isAdmin"]) },
     });
   } catch (error) {
     res.status(500).json({
@@ -49,7 +53,7 @@ exports.createUser = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password -__v");
 
     res.status(200).json({
       status: "success",

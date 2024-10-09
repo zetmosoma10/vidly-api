@@ -1,4 +1,5 @@
 const express = require("express");
+const { authProtect, authRestrict} = require('../middleware/auth')
 const {
   getGenres,
   getGenre,
@@ -8,7 +9,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getGenres).post(createGenre);
-router.route("/:id").get(getGenre).delete(deleteGenre);
+router.route("/").get(getGenres).post(authProtect, authRestrict, createGenre);
+router.route("/:id").get(getGenre).delete(authProtect,authRestrict,  deleteGenre);
 
 module.exports = router;

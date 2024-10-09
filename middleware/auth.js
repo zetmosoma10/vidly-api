@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/User");
 
-async function authProtect(req, res, next) {
+exports.authProtect = async (req, res, next) => {
   try {
     // * 1 - CHECK IF TOKEN EXIST IN REQ-HEADER
     const token = req.header("Authorization")?.split(" ")[1];
@@ -33,6 +33,15 @@ async function authProtect(req, res, next) {
       error: error.message,
     });
   }
-}
+};
 
-module.exports = authProtect;
+exports.authRestrict = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({
+      status: "fail",
+      message: "Access denied. Forbidden",
+    });
+  }
+
+  next();
+};

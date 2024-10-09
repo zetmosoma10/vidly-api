@@ -1,4 +1,3 @@
-const Joi = require("joi");
 const { Customer, validateCustomer } = require("../models/Customer");
 
 exports.createCustomer = async (req, res) => {
@@ -70,7 +69,7 @@ exports.updateCustomer = async (req, res) => {
   });
 };
 
-exports.updateDelete = async (req, res) => {
+exports.deleteCustomer = async (req, res) => {
   const { id } = req.params;
   const customer = await Customer.findByIdAndDelete(id);
 
