@@ -1,4 +1,5 @@
 const { User, validateUser } = require("../models/User");
+const CustomError = require("../utils/CustomError");
 const _ = require("lodash");
 
 exports.getCurrentUser = async (req, res) => {

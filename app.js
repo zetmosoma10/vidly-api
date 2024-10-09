@@ -9,6 +9,7 @@ const rentalsRoutes = require("./routes/rentalsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
 const authRoutes = require("./routes/authRoutes");
 const catchAllRoutes = require("./middleware/catchAllRoutes");
+const errorMiddleware = require("./middleware/errorMiddleware");
 const app = express();
 
 app.use(express.json());
@@ -22,5 +23,6 @@ app.use("/api/rentals", rentalsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 app.all("*", catchAllRoutes);
+app.use(errorMiddleware);
 
 module.exports = app;
