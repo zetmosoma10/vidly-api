@@ -52,7 +52,10 @@ exports.loginUser = async (req, res) => {
     { expiresIn: process.env.JWT_EXP }
   );
 
-  res.header("Authorization", `Bearer ${token}`).status(200).json({
+  res.status(200).json({
     status: "success",
+    token,
   });
 };
+
+

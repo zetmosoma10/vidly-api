@@ -34,13 +34,11 @@ exports.createUser = async (req, res) => {
       { expiresIn: process.env.JWT_EXP }
     );
 
-    res
-      .header("Authorization", `Bearer ${token}`)
-      .status(201)
-      .json({
-        status: "success",
-        data: { user: _.pick(newUser, ["name", "email", "_id"]) },
-      });
+    res.status(201).json({
+      status: "success",
+      token,
+      data: { user: _.pick(newUser, ["name", "email", "_id"]) },
+    });
   } catch (error) {
     res.status(500).json({
       status: "error",

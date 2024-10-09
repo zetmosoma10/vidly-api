@@ -1,4 +1,5 @@
 const express = require("express");
+const authProtect = require("../middleware/auth");
 const {
   createMovie,
   deleteMovie,
@@ -9,7 +10,11 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getMovies).post(createMovie);
-router.route("/:id").get(getMovie).patch(updateMovie).delete(deleteMovie);
+router.route("/").get(getMovies).post(authProtect, createMovie);
+router
+  .route("/:id")
+  .get(getMovie)
+  .patch(authProtect, updateMovie)
+  .delete(authProtect, deleteMovie);
 
 module.exports = router;
