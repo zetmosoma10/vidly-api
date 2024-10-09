@@ -4,10 +4,8 @@ exports.createGenre = async (req, res) => {
   const err = validateGenre(req);
 
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   try {
@@ -42,10 +40,8 @@ exports.getGenre = async (req, res) => {
   const genre = await Genre.findById(id);
 
   if (!genre) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Genre with that ID does not exist.",
-    });
+    const error = new CustomError("Genre with that ID does not exist.", 404);
+    return next(error);
   }
 
   res.status(200).json({
@@ -61,10 +57,8 @@ exports.deleteGenre = async (req, res) => {
   const genre = await Genre.findByIdAndDelete(id);
 
   if (!genre) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Genre with that ID does not exist.",
-    });
+    const error = new CustomError("Genre with that ID does not exist.", 404);
+    return next(error);
   }
 
   res.status(204).json({

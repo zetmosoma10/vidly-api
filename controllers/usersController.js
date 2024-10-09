@@ -10,13 +10,11 @@ exports.getCurrentUser = async (req, res) => {
   });
 };
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   const err = validateUser(req);
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   try {

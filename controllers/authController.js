@@ -19,29 +19,23 @@ const validateLoginUser = (req) => {
 exports.loginUser = async (req, res) => {
   const err = validateLoginUser(req);
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   const { email, password } = req.body;
   // * 1 - Check if email exist
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Invalid email or password",
-    });
+    const error = new CustomError("Invalid email or password", 400);
+    return next(error);
   }
 
   // * 2 - Check if password is correct
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Invalid email or password",
-    });
+    const error = new CustomError("Invalid email or password", 400);
+    return next(error);
   }
 
   //  * GENERATE JWT

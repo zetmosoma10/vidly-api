@@ -1,21 +1,18 @@
 const { Movie, validateMovie } = require("../models/Movie");
 const { Genre } = require("../models/Genre");
+const CustomError = require("../utils/CustomError");
 
 exports.createMovie = async (req, res) => {
   const err = validateMovie(req);
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   const genre = await Genre.findById(req.body.genreId);
   if (!genre) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid genre",
-    });
+    const error = new CustomError("Invalid genre", 404);
+    return next(error);
   }
 
   const movie = await Movie.create({
@@ -49,10 +46,8 @@ exports.getMovie = async (req, res) => {
   const movie = await Movie.findById(id);
 
   if (!movie) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Movie with given ID doesn't exist",
-    });
+    const error = new CustomError("Movie with given ID doesn't exist", 404);
+    return next(error);
   }
 
   res.status(200).json({
@@ -69,10 +64,8 @@ exports.updateMovie = async (req, res) => {
   });
 
   if (!movie) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Movie with given ID doesn't exist",
-    });
+    const error = new CustomError("Movie with given ID doesn't exist", 404);
+    return next(error);
   }
 
   res.status(200).json({
@@ -86,10 +79,8 @@ exports.deleteMovie = async (req, res) => {
   const deletedMovie = await Movie.findByIdAndDelete(id);
 
   if (!deletedMovie) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Movie with given ID doesn't exist",
-    });
+    const error = new CustomError("Movie with given ID doesn't exist", 404);
+    return next(error);
   }
 
   res.status(204).json({

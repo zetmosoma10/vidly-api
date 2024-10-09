@@ -10,12 +10,7 @@ exports.authProtect = async (req, res, next) => {
       const err = new CustomError("Access denied. No token provided.", 401);
       return next(err);
     }
-    // if (!token) {
-    //   return res.status(401).json({
-    //     status: "fail",
-    //     message: "Access denied. No token provided.",
-    //   });
-    // }
+
     // * 2 - VERIFY THE TOKEN
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     // * 3 - CHECK THE USER FROM DB WITH TOKEN_ID
@@ -42,10 +37,8 @@ exports.authProtect = async (req, res, next) => {
 
 exports.authRestrict = async (req, res, next) => {
   if (!req.user.isAdmin) {
-    return res.status(403).json({
-      status: "fail",
-      message: "Access denied. Forbidden",
-    });
+    const err = new CustomError("Access denied. Forbidden", 403);
+    return next(err);
   }
 
   next();

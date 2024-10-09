@@ -3,10 +3,8 @@ const { Customer, validateCustomer } = require("../models/Customer");
 exports.createCustomer = async (req, res) => {
   const err = validateCustomer(req);
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   const { isGold, name, phone } = req.body;
@@ -37,10 +35,11 @@ exports.getCustomer = async (req, res) => {
   const customer = await Customer.findById(id);
 
   if (!customer) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Customer with a given ID does not exist",
-    });
+    const error = new CustomError(
+      "Customer with a given ID does not exist",
+      404
+    );
+    return next(error);
   }
 
   res.status(200).json({
@@ -57,10 +56,11 @@ exports.updateCustomer = async (req, res) => {
   });
 
   if (!customer) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Customer with a given ID does not exist",
-    });
+    const error = new CustomError(
+      "Customer with a given ID does not exist",
+      404
+    );
+    return next(error);
   }
 
   res.status(200).json({
@@ -74,10 +74,11 @@ exports.deleteCustomer = async (req, res) => {
   const customer = await Customer.findByIdAndDelete(id);
 
   if (!customer) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Customer with a given ID does not exist",
-    });
+    const error = new CustomError(
+      "Customer with a given ID does not exist",
+      404
+    );
+    return next(error);
   }
 
   res.status(204).json({

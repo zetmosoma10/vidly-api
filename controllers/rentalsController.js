@@ -1,38 +1,31 @@
 const { Rental, validateRentals } = require("../models/Rentals");
 const { Customer } = require("../models/Customer");
 const { Movie } = require("../models/Movie");
+const CustomError = require("../utils/CustomError");
 const mongoose = require("mongoose");
 
 exports.createRental = async (req, res) => {
   const err = validateRentals(req);
   if (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: err,
-    });
+    const error = new CustomError(err, 400);
+    return next(error);
   }
 
   const customer = await Customer.findById(req.body.customerId);
   if (!customer) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid customer",
-    });
+    const error = new CustomError("Invalid customer", 404);
+    return next(error);
   }
 
   const movie = await Movie.findById(req.body.movieId);
   if (!movie) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid movie",
-    });
+    const error = new CustomError("Invalid movie", 404);
+    return next(error);
   }
 
   if (movie.numberInStock === 0) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Movie not in stock",
-    });
+    const error = new CustomError("Movie not in stock", 400);
+    return next(error);
   }
 
   const session = await mongoose.startSession();
@@ -90,8 +83,5 @@ exports.getRentals = async (req, res) => {
   });
 };
 
+// TODO: BUILD GET RENTAL BY ID
 exports.getRental = async (req, res) => {};
-
-exports.updateRental = async (req, res) => {};
-
-exports.deleteRental = async (req, res) => {};
