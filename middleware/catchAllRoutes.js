@@ -1,8 +1,8 @@
-const catchAllRoutes = (req, res) => {
-  res.status(404).json({
-    status: "fail",
-    message: `Invalid resource: ${req.originalUrl}`,
-  });
+const CustomError = require("../utils/CustomError");
+
+const catchAllRoutes = (req, res, next) => {
+  const error = new CustomError(`Invalid resource: ${req.originalUrl}`, 404);
+  return next(error);
 };
 
 module.exports = catchAllRoutes;

@@ -1,5 +1,7 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
+const CustomError = require("../utils/CustomError");
+const asyncMiddleware = require("../middleware/asyncMiddleware");
 const { User } = require("../models/User");
 
 const validateLoginUser = (req) => {
@@ -16,7 +18,7 @@ const validateLoginUser = (req) => {
   return null;
 };
 
-exports.loginUser = async (req, res) => {
+exports.loginUser = asyncMiddleware(async (req, res) => {
   const err = validateLoginUser(req);
   if (err) {
     const error = new CustomError(err, 400);
@@ -45,4 +47,4 @@ exports.loginUser = async (req, res) => {
     status: "success",
     token,
   });
-};
+});

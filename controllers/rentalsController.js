@@ -3,8 +3,9 @@ const { Customer } = require("../models/Customer");
 const { Movie } = require("../models/Movie");
 const CustomError = require("../utils/CustomError");
 const mongoose = require("mongoose");
+const asyncMiddleware = require("../middleware/asyncMiddleware");
 
-exports.createRental = async (req, res) => {
+exports.createRental = async (req, res, next) => {
   const err = validateRentals(req);
   if (err) {
     const error = new CustomError(err, 400);
@@ -66,14 +67,12 @@ exports.createRental = async (req, res) => {
     await session.abortTransaction();
     session.endSession();
 
-    res.status(500).json({
-      status: "error",
-      message: "Something happened, try again later.",
-    });
+    const err = new CustomError("Something happened, try again later.", 500);
+    next(err);
   }
 };
 
-exports.getRentals = async (req, res) => {
+exports.getRentals = asyncMiddleware(async (req, res, next) => {
   const rentals = await Rental.find().sort("-dateOut");
 
   res.status(200).json({
@@ -81,7 +80,7 @@ exports.getRentals = async (req, res) => {
     count: rentals.length,
     data: { rentals },
   });
-};
+});
 
 // TODO: BUILD GET RENTAL BY ID
 exports.getRental = async (req, res) => {};

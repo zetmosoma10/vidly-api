@@ -1,30 +1,23 @@
+const asyncMiddleware = require("../middleware/asyncMiddleware");
+const CustomError = require("../utils/CustomError");
 const { Genre, validateGenre } = require("../models/Genre");
 
-exports.createGenre = async (req, res) => {
+exports.createGenre = asyncMiddleware(async (req, res, next) => {
   const err = validateGenre(req);
-
   if (err) {
     const error = new CustomError(err, 400);
     return next(error);
   }
 
-  try {
-    const genre = await Genre.create({ genre: req.body.genre });
+  const genre = await Genre.create({ genre: req.body.genre });
 
-    res.status(201).json({
-      status: "success",
-      data: { genre },
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: "Something went wrong, try again later",
-      err: error,
-    });
-  }
-};
+  res.status(201).json({
+    status: "success",
+    data: { genre },
+  });
+});
 
-exports.getGenres = async (req, res) => {
+exports.getGenres = asyncMiddleware(async (req, res, next) => {
   const genres = await Genre.find().sort("name");
 
   res.status(200).json({
@@ -33,9 +26,9 @@ exports.getGenres = async (req, res) => {
       genres,
     },
   });
-};
+});
 
-exports.getGenre = async (req, res) => {
+exports.getGenre = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
   const genre = await Genre.findById(id);
 
@@ -50,9 +43,9 @@ exports.getGenre = async (req, res) => {
       genre,
     },
   });
-};
+});
 
-exports.deleteGenre = async (req, res) => {
+exports.deleteGenre = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
   const genre = await Genre.findByIdAndDelete(id);
 
@@ -64,4 +57,4 @@ exports.deleteGenre = async (req, res) => {
   res.status(204).json({
     status: "success",
   });
-};
+});

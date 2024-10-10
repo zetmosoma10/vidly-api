@@ -1,6 +1,8 @@
+const asyncMiddleware = require("../middleware/asyncMiddleware");
+const CustomError = require("../utils/CustomError");
 const { Customer, validateCustomer } = require("../models/Customer");
 
-exports.createCustomer = async (req, res) => {
+exports.createCustomer = asyncMiddleware(async (req, res) => {
   const err = validateCustomer(req);
   if (err) {
     const error = new CustomError(err, 400);
@@ -18,9 +20,9 @@ exports.createCustomer = async (req, res) => {
     status: "success",
     data: customer,
   });
-};
+});
 
-exports.getCustomers = async (req, res) => {
+exports.getCustomers = asyncMiddleware(async (req, res) => {
   const customers = await Customer.find().sort("name");
 
   res.status(200).json({
@@ -28,9 +30,9 @@ exports.getCustomers = async (req, res) => {
     count: customers.length,
     data: { customers },
   });
-};
+});
 
-exports.getCustomer = async (req, res) => {
+exports.getCustomer = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
   const customer = await Customer.findById(id);
 
@@ -46,9 +48,9 @@ exports.getCustomer = async (req, res) => {
     status: "success",
     data: { customer },
   });
-};
+});
 
-exports.updateCustomer = async (req, res) => {
+exports.updateCustomer = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
   const customer = await Customer.findByIdAndUpdate(id, req.body, {
     new: true,
@@ -67,9 +69,9 @@ exports.updateCustomer = async (req, res) => {
     status: "success",
     data: { customer },
   });
-};
+});
 
-exports.deleteCustomer = async (req, res) => {
+exports.deleteCustomer = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
   const customer = await Customer.findByIdAndDelete(id);
 
@@ -85,4 +87,4 @@ exports.deleteCustomer = async (req, res) => {
     status: "success",
     data: { customer },
   });
-};
+});

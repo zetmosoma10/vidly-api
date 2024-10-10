@@ -1,8 +1,10 @@
 const { Movie, validateMovie } = require("../models/Movie");
 const { Genre } = require("../models/Genre");
 const CustomError = require("../utils/CustomError");
+const validateObjectId = require("../utils/validateObjectId");
+const asyncMiddleware = require("../middleware/asyncMiddleware");
 
-exports.createMovie = async (req, res) => {
+exports.createMovie = asyncMiddleware(async (req, res, next) => {
   const err = validateMovie(req);
   if (err) {
     const error = new CustomError(err, 400);
@@ -29,9 +31,9 @@ exports.createMovie = async (req, res) => {
     status: "success",
     data: { movie },
   });
-};
+});
 
-exports.getMovies = async (req, res) => {
+exports.getMovies = asyncMiddleware(async (req, res, next) => {
   const movies = await Movie.find();
 
   res.status(200).json({
@@ -39,9 +41,9 @@ exports.getMovies = async (req, res) => {
     count: movies.length,
     data: { movies },
   });
-};
+});
 
-exports.getMovie = async (req, res) => {
+exports.getMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
   const movie = await Movie.findById(id);
 
@@ -54,9 +56,9 @@ exports.getMovie = async (req, res) => {
     status: "success",
     data: { movie },
   });
-};
+});
 
-exports.updateMovie = async (req, res) => {
+exports.updateMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
   const movie = await Movie.findByIdAndUpdate(id, req.body, {
     new: true,
@@ -72,9 +74,9 @@ exports.updateMovie = async (req, res) => {
     status: "success",
     data: { movie },
   });
-};
+});
 
-exports.deleteMovie = async (req, res) => {
+exports.deleteMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
   const deletedMovie = await Movie.findByIdAndDelete(id);
 
@@ -87,4 +89,4 @@ exports.deleteMovie = async (req, res) => {
     status: "success",
     data: { deletedMovie },
   });
-};
+});
