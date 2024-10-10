@@ -1,8 +1,9 @@
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const CustomError = require("../utils/CustomError");
+const validateObjectId = require("../utils/validateObjectId");
 const { Customer, validateCustomer } = require("../models/Customer");
 
-exports.createCustomer = asyncMiddleware(async (req, res) => {
+exports.createCustomer = asyncMiddleware(async (req, res, next) => {
   const err = validateCustomer(req);
   if (err) {
     const error = new CustomError(err, 400);
@@ -22,7 +23,7 @@ exports.createCustomer = asyncMiddleware(async (req, res) => {
   });
 });
 
-exports.getCustomers = asyncMiddleware(async (req, res) => {
+exports.getCustomers = asyncMiddleware(async (req, res, next) => {
   const customers = await Customer.find().sort("name");
 
   res.status(200).json({
@@ -32,8 +33,13 @@ exports.getCustomers = asyncMiddleware(async (req, res) => {
   });
 });
 
-exports.getCustomer = asyncMiddleware(async (req, res) => {
+exports.getCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
+  const err = validateObjectId(id);
+  if (err) {
+    return next(new CustomError(err, 400));
+  }
+
   const customer = await Customer.findById(id);
 
   if (!customer) {
@@ -50,8 +56,13 @@ exports.getCustomer = asyncMiddleware(async (req, res) => {
   });
 });
 
-exports.updateCustomer = asyncMiddleware(async (req, res) => {
+exports.updateCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
+  const err = validateObjectId(id);
+  if (err) {
+    return next(new CustomError(err, 400));
+  }
+
   const customer = await Customer.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
@@ -71,8 +82,13 @@ exports.updateCustomer = asyncMiddleware(async (req, res) => {
   });
 });
 
-exports.deleteCustomer = asyncMiddleware(async (req, res) => {
+exports.deleteCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
+  const err = validateObjectId(id);
+  if (err) {
+    return next(new CustomError(err, 400));
+  }
+
   const customer = await Customer.findByIdAndDelete(id);
 
   if (!customer) {
