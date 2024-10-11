@@ -1,4 +1,5 @@
 const winston = require("winston");
+const mongoLogger = require("../utils/mongoLogger");
 
 const logger = winston.createLogger({
   level: "info",
@@ -9,6 +10,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({ filename: "error.log", level: "error" }),
+    mongoLogger,
   ],
   exceptionHandlers: [
     new winston.transports.File({ filename: "exception.log" }),
