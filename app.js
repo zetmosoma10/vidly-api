@@ -1,6 +1,4 @@
 const express = require("express");
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
 const morgan = require("morgan");
 const genresRoutes = require("./routes/genresRoutes");
 const customerRoutes = require("./routes/customerRoutes");
@@ -10,6 +8,8 @@ const usersRoutes = require("./routes/usersRoutes");
 const authRoutes = require("./routes/authRoutes");
 const catchAllRoutes = require("./middleware/catchAllRoutes");
 const errorMiddleware = require("./middleware/errorMiddleware");
+const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 const app = express();
 
 app.use(express.json());

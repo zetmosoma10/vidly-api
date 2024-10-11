@@ -18,7 +18,7 @@ const validateLoginUser = (req) => {
   return null;
 };
 
-exports.loginUser = asyncMiddleware(async (req, res) => {
+exports.loginUser = asyncMiddleware(async (req, res, next) => {
   const err = validateLoginUser(req);
   if (err) {
     const error = new CustomError(err, 400);

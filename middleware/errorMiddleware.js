@@ -1,4 +1,8 @@
+const logger = require("../utils/logger");
+
 function errorMiddleware(error, req, res, next) {
+  logger.error(error.message, { stack: error.stack });
+
   error.statusCode = error.statusCode || 500;
   error.status = error.status || "error";
 
