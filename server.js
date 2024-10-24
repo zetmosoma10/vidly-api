@@ -14,12 +14,16 @@ process.on("unhandledRejection", (error) => {
 });
 
 // * CONNECT TO Database
-mongoose.connect(process.env.DB_CONN_STR).then(() => {
-  logger.info("Db connection successfull...");
-});
+if (process.env.NODE_ENV !== "test") {
+  mongoose.connect(process.env.DB_CONN_STR).then(() => {
+    console.log(`Connected to Datbase...`);
+  });
+}
 
 // ? START THE SERVER
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  logger.info(`Server started at port ${port}...`);
+const server = app.listen(port, () => {
+  console.log(`Server started at port ${port}...`);
 });
+
+module.exports = server;

@@ -1,7 +1,8 @@
 const logger = require("../utils/logger");
 
 function errorMiddleware(error, req, res, next) {
-  logger.error(error.message, { stack: error.stack });
+  // logger.error(error.message, { stack: error.stack });
+  // console.log(error.message, { stack: error.stack });
 
   error.statusCode = error.statusCode || 500;
   error.status = error.status || "error";
@@ -14,6 +15,11 @@ function errorMiddleware(error, req, res, next) {
       stack: error.stack,
     });
   } else if (process.env.NODE_ENV === "production") {
+    res.status(error.statusCode).json({
+      status: error.status,
+      message: error.message,
+    });
+  } else if (process.env.NODE_ENV === "test") {
     res.status(error.statusCode).json({
       status: error.status,
       message: error.message,

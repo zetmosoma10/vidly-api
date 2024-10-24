@@ -35,6 +35,9 @@ exports.getGenre = asyncMiddleware(async (req, res, next) => {
   if (err) {
     return next(new CustomError(err, 400));
   }
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return next(new CustomError("Invalid ObjectId.", 400)); // Return a 400 error
+  // }
 
   const genre = await Genre.findById(id);
 
