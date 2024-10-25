@@ -19,9 +19,9 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Connected to Datbase...`);
   });
 }
-
 // ? START THE SERVER
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
+
 const server = app.listen(port, () => {
   console.log(`Server started at port ${port}...`);
 });

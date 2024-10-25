@@ -1,4 +1,3 @@
-require("dotenv").config({ path: "../../.env" });
 const request = require("supertest");
 const { Genre } = require("../../models/Genre.js");
 const { User } = require("../../models/User.js");
