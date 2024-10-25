@@ -3,7 +3,7 @@ const CustomError = require("../utils/CustomError");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const _ = require("lodash");
 
-exports.getCurrentUser = asyncMiddleware(async (req, res,next) => {
+exports.getCurrentUser = asyncMiddleware(async (req, res, next) => {
   const user = req.user.toObject();
   res.status(200).json({
     status: "success",
@@ -44,7 +44,7 @@ exports.createUser = asyncMiddleware(async (req, res, next) => {
   });
 });
 
-exports.getUsers = asyncMiddleware(async (req, res,next) => {
+exports.getUsers = asyncMiddleware(async (req, res, next) => {
   const users = await User.find().select("-password -__v");
 
   res.status(200).json({

@@ -19,7 +19,7 @@ exports.createCustomer = asyncMiddleware(async (req, res, next) => {
 
   res.status(201).json({
     status: "success",
-    data: customer,
+    data: { customer },
   });
 });
 

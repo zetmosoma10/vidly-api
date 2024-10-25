@@ -1,15 +1,14 @@
 require("dotenv").config({ path: "./.env" });
 const app = require("./app");
 const mongoose = require("mongoose");
-const logger = require("./utils/logger");
 
 process.on("uncaughtException", (error) => {
-  logger.error(error.message, { stack: error.stack });
+  console.log(error.message, { stack: error.stack });
   process.exit(1);
 });
 
 process.on("unhandledRejection", (error) => {
-  logger.error(error.message, { stack: error.stack });
+  console.log(error.message, { stack: error.stack });
   process.exit(1);
 });
 
