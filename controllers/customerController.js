@@ -99,7 +99,7 @@ exports.deleteCustomer = asyncMiddleware(async (req, res, next) => {
     return next(error);
   }
 
-  res.status(204).json({
+  res.status(200).json({
     status: "success",
     data: { customer },
   });

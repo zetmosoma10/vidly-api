@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const _ = require("lodash");
 const { User } = require("../../models/User.js");
 
-describe("User", () => {
+describe("/api/users", () => {
   beforeAll(async () => {
     await mongoose.connect("mongodb://localhost:27017/vidly_test");
   });
@@ -11,7 +11,7 @@ describe("User", () => {
     await mongoose.connection.close();
   });
 
-  let adminToken, generalToken, allUsersInDb;
+  let adminToken, generalToken;
 
   beforeEach(async () => {
     server = require("../../server.js");
@@ -42,7 +42,7 @@ describe("User", () => {
     await server.close();
   });
 
-  describe("getAllUsers", () => {
+  describe("GET /", () => {
     it("should return all users in database if logged in user is admin", async () => {
       const res = await request(server)
         .get("/api/users")
@@ -71,7 +71,7 @@ describe("User", () => {
     });
   });
 
-  describe("createUser", () => {
+  describe("POST /", () => {
     it("should save user to database and return 201 with JWT if user provide valid input data", async () => {
       const user = {
         name: "test",

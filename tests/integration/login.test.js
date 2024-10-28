@@ -2,7 +2,7 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const { User } = require("../../models/User.js");
 
-describe("login User", () => {
+describe("/api/auth", () => {
   beforeAll(async () => {
     await mongoose.connect("mongodb://localhost:27017/vidly_test");
   });
@@ -10,7 +10,7 @@ describe("login User", () => {
     await mongoose.connection.close();
   });
 
-  describe("POST /api/auth", () => {
+  describe("POST /", () => {
     let email, password;
 
     beforeEach(async () => {
