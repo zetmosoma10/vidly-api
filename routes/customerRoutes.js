@@ -1,4 +1,5 @@
 const express = require("express");
+const { validateObjectId } = require("../middleware/validateObjectId");
 const {
   createCustomer,
   getCustomers,
@@ -8,12 +9,11 @@ const {
 } = require("../controllers/customerController");
 
 const router = express.Router();
-
 router.route("/").get(getCustomers).post(createCustomer);
 router
   .route("/:id")
-  .get(getCustomer)
-  .patch(updateCustomer)
-  .delete(deleteCustomer);
+  .get(validateObjectId, getCustomer)
+  .patch(validateObjectId, updateCustomer)
+  .delete(validateObjectId, deleteCustomer);
 
 module.exports = router;

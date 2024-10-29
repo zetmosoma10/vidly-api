@@ -1,6 +1,5 @@
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const CustomError = require("../utils/CustomError");
-const validateObjectId = require("../utils/validateObjectId");
 const { Genre, validateGenre } = require("../models/Genre");
 
 exports.createGenre = asyncMiddleware(async (req, res, next) => {
@@ -31,14 +30,6 @@ exports.getGenres = asyncMiddleware(async (req, res, next) => {
 
 exports.getGenre = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return next(new CustomError("Invalid ObjectId.", 400)); // Return a 400 error
-  // }
-
   const genre = await Genre.findById(id);
 
   if (!genre) {
@@ -56,11 +47,6 @@ exports.getGenre = asyncMiddleware(async (req, res, next) => {
 
 exports.deleteGenre = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const genre = await Genre.findByIdAndDelete(id);
 
   if (!genre) {

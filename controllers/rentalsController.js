@@ -71,7 +71,7 @@ exports.createRental = async (req, res, next) => {
     next(err);
   }
 };
-
+ 
 exports.getRentals = asyncMiddleware(async (req, res, next) => {
   const rentals = await Rental.find().sort("-dateOut");
 
@@ -81,6 +81,3 @@ exports.getRentals = asyncMiddleware(async (req, res, next) => {
     data: { rentals },
   });
 });
-
-// TODO: BUILD GET RENTAL BY ID
-exports.getRental = async (req, res) => {};

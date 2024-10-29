@@ -1,5 +1,6 @@
 const express = require("express");
 const { authProtect, authRestrict } = require("../middleware/auth");
+const { validateObjectId } = require("../middleware/validateObjectId");
 const {
   createMovie,
   deleteMovie,
@@ -13,8 +14,8 @@ const router = express.Router();
 router.route("/").get(getMovies).post(authProtect, authRestrict, createMovie);
 router
   .route("/:id")
-  .get(getMovie)
-  .patch(authProtect, updateMovie)
-  .delete(authProtect, authRestrict, deleteMovie);
+  .get(validateObjectId, getMovie)
+  .patch(authProtect, validateObjectId, updateMovie)
+  .delete(authProtect, authRestrict, validateObjectId, deleteMovie);
 
 module.exports = router;

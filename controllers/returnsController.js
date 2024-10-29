@@ -1,19 +1,28 @@
 const asyncMiddleware = require("../middleware/asyncMiddleware");
-const { Customer } = require("../models/Customer");
 const { Movie } = require("../models/Movie");
 const { Rental } = require("../models/Rentals");
 const CustomError = require("../utils/CustomError");
 const moment = require("moment");
+const Joi = require("joi");
 
-exports.createReturns = asyncMiddleware(async (req, res, next) => {
-  if (!req.body.customerId) {
-    const err = new CustomError("customerId is required", 400);
-    return next(err);
+const validateReturns = (req) => {
+  const schema = Joi.object({
+    movieId: Joi.objectId().required(),
+    customerId: Joi.objectId().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return error.details.map((err) => err.message).join(", ");
   }
 
-  if (!req.body.movieId) {
-    const err = new CustomError("movieId id is required", 400);
-    return next(err);
+  return null;
+};
+
+exports.createReturns = asyncMiddleware(async (req, res, next) => {
+  const error = validateReturns(req);
+  if (error) {
+    return next(new CustomError(error.message, 400));
   }
 
   const rental = await Rental.findOne({
@@ -22,13 +31,11 @@ exports.createReturns = asyncMiddleware(async (req, res, next) => {
   });
 
   if (!rental) {
-    const err = new CustomError("rental not found", 404);
-    return next(err);
+    return next(new CustomError("rental not found", 404));
   }
 
   if (rental.dateReturned) {
-    const err = new CustomError("return already processed", 400);
-    return next(err);
+    return next(new CustomError("return already processed", 400));
   }
 
   rental.dateReturned = new Date();

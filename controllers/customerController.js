@@ -1,6 +1,5 @@
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const CustomError = require("../utils/CustomError");
-const validateObjectId = require("../utils/validateObjectId");
 const { Customer, validateCustomer } = require("../models/Customer");
 
 exports.createCustomer = asyncMiddleware(async (req, res, next) => {
@@ -35,11 +34,6 @@ exports.getCustomers = asyncMiddleware(async (req, res, next) => {
 
 exports.getCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const customer = await Customer.findById(id);
 
   if (!customer) {
@@ -58,11 +52,6 @@ exports.getCustomer = asyncMiddleware(async (req, res, next) => {
 
 exports.updateCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const customer = await Customer.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
@@ -84,11 +73,6 @@ exports.updateCustomer = asyncMiddleware(async (req, res, next) => {
 
 exports.deleteCustomer = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const customer = await Customer.findByIdAndDelete(id);
 
   if (!customer) {

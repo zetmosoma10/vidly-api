@@ -1,7 +1,6 @@
 const { Movie, validateMovie } = require("../models/Movie");
 const { Genre } = require("../models/Genre");
 const CustomError = require("../utils/CustomError");
-const validateObjectId = require("../utils/validateObjectId");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 
 exports.createMovie = asyncMiddleware(async (req, res, next) => {
@@ -45,11 +44,6 @@ exports.getMovies = asyncMiddleware(async (req, res, next) => {
 
 exports.getMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const movie = await Movie.findById(id);
 
   if (!movie) {
@@ -65,11 +59,6 @@ exports.getMovie = asyncMiddleware(async (req, res, next) => {
 
 exports.updateMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const movie = await Movie.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
@@ -88,11 +77,6 @@ exports.updateMovie = asyncMiddleware(async (req, res, next) => {
 
 exports.deleteMovie = asyncMiddleware(async (req, res, next) => {
   const { id } = req.params;
-  const err = validateObjectId(id);
-  if (err) {
-    return next(new CustomError(err, 400));
-  }
-
   const deletedMovie = await Movie.findByIdAndDelete(id);
 
   if (!deletedMovie) {

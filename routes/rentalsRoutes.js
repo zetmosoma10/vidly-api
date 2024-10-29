@@ -12,8 +12,5 @@ router
   .route("/")
   .get(authProtect, authRestrict, getRentals)
   .post(authProtect, createRental);
-router.route("/:id").get(authProtect, getRental);
-// .patch(authProtect, updateRental)
-// .delete(authProtect, deleteRental);
 
 module.exports = router;
