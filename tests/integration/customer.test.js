@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
 const { Customer } = require("../../models/Customer.js");
-const { deleteGenre } = require("../../controllers/genresController.js");
 
 describe("/api/customers", () => {
   beforeAll(async () => {
