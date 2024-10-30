@@ -1,9 +1,10 @@
 {
   "name": "vidly",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "jest --watchAll --detectOpenHandles --verbose"
+    "test": "jest --watchAll --detectOpenHandles --verbose",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
