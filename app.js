@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const xss = require("xss-clean");
+const sanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const genresRoutes = require("./routes/genresRoutes");
 const customerRoutes = require("./routes/customerRoutes");
@@ -18,6 +20,8 @@ const app = express();
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
+app.use(xss());
+app.use(sanitize());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
